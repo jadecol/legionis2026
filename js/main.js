@@ -427,39 +427,54 @@ window.addEventListener('scroll', updateActiveNav, { passive: true });
 
 /* ════════════════════════════════════════════════════════
    COUNTDOWN — Elecciones 31 de mayo 2026
+   Con manejo de estado: antes / durante / después
 ════════════════════════════════════════════════════════ */
 (function initCountdown() {
-  // Fecha objetivo: 31 mayo 2026, 08:00 AM hora Colombia (UTC-5)
-  const ELECTION_DATE = new Date('2026-05-31T08:00:00-05:00');
+  // Fecha de apertura de urnas: 31 mayo 2026, 08:00 AM COT (UTC-5)
+  const ELECTION_OPEN  = new Date('2026-05-31T08:00:00-05:00');
+  // Fecha de cierre de urnas: 31 mayo 2026, 16:00 PM COT
+  const ELECTION_CLOSE = new Date('2026-05-31T16:00:00-05:00');
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
+  function setDisplay(dias, horas, min, seg) {
+    const ids = ['cd-dias','cd-horas','cd-min','cd-seg'];
+    const vals = [dias, horas, min, seg];
+    ids.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = vals[i];
+    });
+  }
+
   function tick() {
     const now  = new Date();
-    const diff = ELECTION_DATE - now;
+    const wrap = document.querySelector('.hero__countdown');
 
-    if (diff <= 0) {
-      document.getElementById('cd-dias').textContent = '00';
-      document.getElementById('cd-horas').textContent = '00';
-      document.getElementById('cd-min').textContent = '00';
-      document.getElementById('cd-seg').textContent = '00';
+    // Estado 1: Día de elecciones — urnas abiertas
+    if (now >= ELECTION_OPEN && now < ELECTION_CLOSE) {
+      const label = document.querySelector('.countdown__label');
+      if (label) label.textContent = '🗳️ HOY · Urnas abiertas hasta las 4:00 PM';
+      if (wrap) wrap.classList.add('countdown--ended');
+      setDisplay('HOY', '¡VOTA', 'AHORA', '!');
       return;
     }
 
+    // Estado 2: Elecciones terminadas
+    if (now >= ELECTION_CLOSE) {
+      const label = document.querySelector('.countdown__label');
+      if (label) label.textContent = '✅ Elecciones realizadas · ¡Gracias Colombia!';
+      if (wrap) wrap.classList.add('countdown--ended');
+      setDisplay('✅', '✅', '✅', '✅');
+      return;
+    }
+
+    // Estado 3: Cuenta regresiva normal
+    const diff  = ELECTION_OPEN - now;
     const dias  = Math.floor(diff / (1000 * 60 * 60 * 24));
     const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const min   = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seg   = Math.floor((diff % (1000 * 60)) / 1000);
-
-    const dEl = document.getElementById('cd-dias');
-    const hEl = document.getElementById('cd-horas');
-    const mEl = document.getElementById('cd-min');
-    const sEl = document.getElementById('cd-seg');
-
-    if (dEl) dEl.textContent = pad(dias);
-    if (hEl) hEl.textContent = pad(horas);
-    if (mEl) mEl.textContent = pad(min);
-    if (sEl) sEl.textContent = pad(seg);
+    setDisplay(pad(dias), pad(horas), pad(min), pad(seg));
   }
 
   tick();

@@ -1079,3 +1079,59 @@ footer {
   .propuestas-grid { grid-template-columns: 1fr; }
   .urgencia-banner { flex-direction: column; }
 }
+
+/* ── BANNER CÓMO VOTAR ───────────────────────────────────── */
+.como-votar-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.cvb-inner { display: flex; flex-direction: column; gap: 3px; }
+.cvb-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+.cvb-steps {
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+}
+.cvb-steps strong { color: #5DCAA5; }
+.cvb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #5DCAA5;
+  color: #042C53;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+.cvb-btn:hover {
+  background: #4AB892;
+  transform: translateY(-1px);
+}
+.cvb-btn i { font-size: 15px; }
+
+/* ── COUNTDOWN POST-ELECCIÓN ─────────────────────────────── */
+.countdown--ended .countdown__label {
+  color: #5DCAA5;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .como-votar-banner { flex-direction: column; align-items: flex-start; }
+  .cvb-btn { width: 100%; justify-content: center; }
+}
