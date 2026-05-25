@@ -1,0 +1,500 @@
+/* ============================================================
+   PROYECTO 2026 — main.js
+   Lógica de interacción, contadores, formularios y animaciones
+   ============================================================ */
+
+'use strict';
+
+/* ── 1. NAVBAR ────────────────────────────────────────────── */
+(function initNavbar() {
+  const navbar = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  // Scroll effect
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+
+  // Hamburger toggle
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('active', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen);
+    });
+    // Cierra menú al hacer clic en un enlace
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+})();
+
+
+/* ── 2. CONTADORES ANIMADOS ───────────────────────────────── */
+const COUNTER_DATA = {
+  'cnt-apoyo':      { target: 147823, suffix: '' },
+  'cnt-testigos':   { target: 34210,  suffix: '' },
+  'cnt-municipios': { target: 862,    suffix: '' },
+  'cnt-propuestas': { target: 52340,  suffix: '' },
+};
+
+function animateCounter(el, target, duration = 2000) {
+  const start = performance.now();
+  const formatter = new Intl.NumberFormat('es-CO');
+
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = formatter.format(Math.round(eased * target));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function initCounters() {
+  Object.entries(COUNTER_DATA).forEach(([id, { target }]) => {
+    const el = document.getElementById(id);
+    if (el) animateCounter(el, target);
+  });
+}
+
+// IntersectionObserver para disparar contadores cuando sean visibles
+const counterSection = document.getElementById('hero-stats');
+if (counterSection) {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        initCounters();
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  obs.observe(counterSection);
+} else {
+  setTimeout(initCounters, 400);
+}
+
+
+/* ── 3. BARRAS DE TEMAS (ESCUCHA CIUDADANA) ──────────────── */
+const ISSUE_DATA = [
+  { id: 'bar-empleo', pct: 38, label: 'pct-empleo' },
+  { id: 'bar-seg',    pct: 27, label: 'pct-seg' },
+  { id: 'bar-salud',  pct: 18, label: 'pct-salud' },
+  { id: 'bar-edu',    pct: 11, label: 'pct-edu' },
+  { id: 'bar-vias',   pct: 6,  label: 'pct-vias' },
+];
+
+function animateBars() {
+  ISSUE_DATA.forEach(({ id, pct, label }) => {
+    const bar = document.getElementById(id);
+    const lbl = document.getElementById(label);
+    if (bar) {
+      requestAnimationFrame(() => {
+        bar.style.width = pct + '%';
+      });
+    }
+    if (lbl) lbl.textContent = pct + '%';
+  });
+}
+
+const issueSection = document.getElementById('escucha');
+if (issueSection) {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateBars();
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  obs.observe(issueSection);
+}
+
+
+/* ── 4. FADE-UP AL HACER SCROLL ──────────────────────────── */
+function initScrollReveal() {
+  const elements = document.querySelectorAll('[data-reveal]');
+  if (!elements.length) return;
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+        entry.target.classList.add('revealed');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  elements.forEach(el => {
+    el.style.animationPlayState = 'paused';
+    obs.observe(el);
+  });
+}
+document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+
+/* ── 5. ESCALERA DE PARTICIPACIÓN ────────────────────────── */
+let selectedStep = null;
+
+function selectStep(n) {
+  selectedStep = n;
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('step' + i);
+    if (el) el.classList.toggle('active', i === n);
+  }
+  // Actualiza el select del formulario
+  const select = document.getElementById('tipo-participacion');
+  if (select) {
+    select.value = String(n);
+    select.dispatchEvent(new Event('change'));
+  }
+}
+
+// Exponer globalmente
+window.selectStep = selectStep;
+
+
+/* ── 6. CONTADOR DE CARACTERES ──────────────────────────── */
+function initCharCounters() {
+  const textareas = document.querySelectorAll('[data-maxchars]');
+  textareas.forEach(ta => {
+    const max = parseInt(ta.dataset.maxchars, 10);
+    const counter = document.getElementById(ta.id + '-count');
+    if (!counter) return;
+    ta.addEventListener('input', () => {
+      const remaining = max - ta.value.length;
+      counter.textContent = remaining + ' caracteres restantes';
+      counter.style.color = remaining < 100 ? '#BA7517' : '';
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initCharCounters);
+
+
+/* ── 7. OPCIONES DE PARTICIPACIÓN (REGISTRO) ────────────── */
+function initPartOptions() {
+  const opts = document.querySelectorAll('.part-option[data-value]');
+  opts.forEach(opt => {
+    opt.addEventListener('click', () => {
+      opts.forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      const select = document.getElementById('tipo-participacion');
+      if (select) {
+        select.value = opt.dataset.value;
+        // Sincroniza con la escalera lateral
+        selectStep(parseInt(opt.dataset.value, 10));
+      }
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', initPartOptions);
+
+
+/* ── 8. VALIDACIÓN Y ENVÍO — ESCUCHA CIUDADANA ──────────── */
+window.submitEscucha = function () {
+  const form = document.getElementById('form-escucha');
+  if (!form) return;
+
+  // Validación mínima
+  const municipio = form.querySelector('#esc-municipio');
+  const tema = form.querySelector('#esc-tema');
+  const texto = form.querySelector('#esc-texto');
+
+  let valid = true;
+  [municipio, tema, texto].forEach(field => {
+    if (!field) return;
+    if (!field.value.trim()) {
+      field.style.borderColor = '#E24B4A';
+      valid = false;
+    } else {
+      field.style.borderColor = '';
+    }
+  });
+
+  if (!valid) {
+    showToast('Por favor completa los campos obligatorios.', 'error');
+    return;
+  }
+
+  // Simular envío (reemplazar por fetch al API Java)
+  const btn = form.querySelector('.btn-submit-escucha');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  setTimeout(() => {
+    form.style.display = 'none';
+    const success = document.getElementById('success-escucha');
+    if (success) success.style.display = 'block';
+  }, 1200);
+
+  /*
+  // ── INTEGRACIÓN FUTURA CON BACKEND JAVA ────────────────
+  // Cuando el backend esté listo, reemplazar el setTimeout por:
+  //
+  // const payload = {
+  //   municipio: municipio.value.trim(),
+  //   tema: tema.value,
+  //   descripcion: texto.value.trim(),
+  //   contacto: form.querySelector('#esc-contacto')?.value.trim() || null,
+  // };
+  //
+  // fetch('/api/v1/escucha', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(payload),
+  // })
+  // .then(res => res.ok ? res.json() : Promise.reject(res))
+  // .then(() => { form.style.display = 'none'; success.style.display = 'block'; })
+  // .catch(() => showToast('Error al enviar. Intenta de nuevo.', 'error'))
+  // .finally(() => { btn.disabled = false; btn.textContent = 'Enviar mi reporte'; });
+  */
+};
+
+
+/* ── 9. VALIDACIÓN Y ENVÍO — REGISTRO DE PARTICIPANTES ───── */
+window.submitRegistro = function () {
+  const form = document.getElementById('form-registro');
+  if (!form) return;
+
+  const required = [
+    'reg-nombres', 'reg-apellidos', 'reg-cedula',
+    'reg-departamento', 'reg-municipio', 'reg-celular', 'reg-email'
+  ];
+
+  let valid = true;
+  required.forEach(id => {
+    const field = form.querySelector('#' + id);
+    if (!field) return;
+    if (!field.value.trim()) {
+      field.style.borderColor = '#E24B4A';
+      valid = false;
+    } else {
+      field.style.borderColor = '';
+    }
+  });
+
+  // Validar tipo de participación seleccionado
+  const tipo = form.querySelector('#tipo-participacion');
+  if (!tipo || !tipo.value) {
+    showToast('Selecciona tu tipo de participación.', 'error');
+    valid = false;
+  }
+
+  // Validar email básico
+  const emailField = form.querySelector('#reg-email');
+  if (emailField && emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+    emailField.style.borderColor = '#E24B4A';
+    showToast('Ingresa un correo electrónico válido.', 'error');
+    valid = false;
+  }
+
+  if (!valid) {
+    showToast('Por favor completa todos los campos obligatorios.', 'error');
+    return;
+  }
+
+  const btn = form.querySelector('.btn-submit-registro');
+  btn.disabled = true;
+  btn.textContent = 'Registrando…';
+
+  setTimeout(() => {
+    form.style.display = 'none';
+    const success = document.getElementById('success-registro');
+    if (success) success.style.display = 'block';
+  }, 1400);
+
+  /*
+  // ── INTEGRACIÓN FUTURA CON BACKEND JAVA ────────────────
+  // const payload = {
+  //   nombres:         form.querySelector('#reg-nombres').value.trim(),
+  //   apellidos:       form.querySelector('#reg-apellidos').value.trim(),
+  //   cedula:          form.querySelector('#reg-cedula').value.trim(),
+  //   departamento:    form.querySelector('#reg-departamento').value,
+  //   municipio:       form.querySelector('#reg-municipio').value.trim(),
+  //   barrio:          form.querySelector('#reg-barrio').value.trim(),
+  //   celular:         form.querySelector('#reg-celular').value.trim(),
+  //   email:           form.querySelector('#reg-email').value.trim(),
+  //   tipoParticipacion: parseInt(form.querySelector('#tipo-participacion').value, 10),
+  //   experienciaElectoral: form.querySelector('#reg-experiencia').value,
+  // };
+  //
+  // fetch('/api/v1/registro', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(payload),
+  // })
+  // .then(res => res.ok ? res.json() : Promise.reject(res))
+  // .then(() => { form.style.display = 'none'; success.style.display = 'block'; })
+  // .catch(() => showToast('Error al registrar. Intenta de nuevo.', 'error'))
+  // .finally(() => { btn.disabled = false; btn.textContent = 'Confirmar mi registro'; });
+  */
+};
+
+
+/* ── 10. TOAST DE NOTIFICACIONES ─────────────────────────── */
+function showToast(message, type = 'info') {
+  // Eliminar toast previo
+  const prev = document.getElementById('toast-notification');
+  if (prev) prev.remove();
+
+  const colors = {
+    info:    { bg: '#E6F1FB', border: '#185FA5', text: '#0C447C' },
+    error:   { bg: '#FCEBEB', border: '#E24B4A', text: '#A32D2D' },
+    success: { bg: '#EAF3DE', border: '#1D9E75', text: '#085041' },
+  };
+  const c = colors[type] || colors.info;
+
+  const toast = document.createElement('div');
+  toast.id = 'toast-notification';
+  toast.setAttribute('role', 'alert');
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: ${c.bg};
+    border: 1px solid ${c.border};
+    color: ${c.text};
+    border-radius: 10px;
+    padding: 0.875rem 1.5rem;
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 9999;
+    max-width: 420px;
+    width: calc(100vw - 2rem);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(10px)';
+    setTimeout(() => toast.remove(), 400);
+  }, 3500);
+}
+
+
+/* ── 11. SCROLL SUAVE PARA ANCLAS ────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    const id = anchor.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    const offset = 80; // altura del navbar fijo
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
+});
+
+
+/* ── 12. GESTIÓN DEL FORMULARIO ACTIVO EN NAV ────────────── */
+function updateActiveNav() {
+  const sections = ['inicio', 'vision', 'escucha', 'participa', 'transparencia', 'contacto'];
+  const links = document.querySelectorAll('.navbar__links a, .navbar__mobile a');
+  let current = '';
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) current = id;
+  });
+
+  links.forEach(link => {
+    const href = link.getAttribute('href')?.slice(1);
+    link.style.color = href === current ? 'rgba(255,255,255,1)' : '';
+  });
+}
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+
+/* ════════════════════════════════════════════════════════
+   COUNTDOWN — Elecciones 31 de mayo 2026
+════════════════════════════════════════════════════════ */
+(function initCountdown() {
+  // Fecha objetivo: 31 mayo 2026, 08:00 AM hora Colombia (UTC-5)
+  const ELECTION_DATE = new Date('2026-05-31T08:00:00-05:00');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const now  = new Date();
+    const diff = ELECTION_DATE - now;
+
+    if (diff <= 0) {
+      document.getElementById('cd-dias').textContent = '00';
+      document.getElementById('cd-horas').textContent = '00';
+      document.getElementById('cd-min').textContent = '00';
+      document.getElementById('cd-seg').textContent = '00';
+      return;
+    }
+
+    const dias  = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const min   = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seg   = Math.floor((diff % (1000 * 60)) / 1000);
+
+    const dEl = document.getElementById('cd-dias');
+    const hEl = document.getElementById('cd-horas');
+    const mEl = document.getElementById('cd-min');
+    const sEl = document.getElementById('cd-seg');
+
+    if (dEl) dEl.textContent = pad(dias);
+    if (hEl) hEl.textContent = pad(horas);
+    if (mEl) mEl.textContent = pad(min);
+    if (sEl) sEl.textContent = pad(seg);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
+
+
+/* ════════════════════════════════════════════════════════
+   DATOS AJUSTADOS — Abelardo De La Espriella
+   (seguridad es el tema #1 de su campaña)
+════════════════════════════════════════════════════════ */
+// Sobreescribir datos de barras de temas con los correctos para este candidato
+const ISSUE_DATA_ESPRIELLA = [
+  { id: 'bar-seg',    pct: 42, label: 'pct-seg' },
+  { id: 'bar-empleo', pct: 28, label: 'pct-empleo' },
+  { id: 'bar-salud',  pct: 16, label: 'pct-salud' },
+  { id: 'bar-edu',    pct:  9, label: 'pct-edu' },
+  { id: 'bar-vias',   pct:  5, label: 'pct-vias' },
+];
+
+// Reemplazar la función animateBars para usar datos correctos
+const issueSection2 = document.getElementById('escucha');
+if (issueSection2) {
+  const obs2 = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        ISSUE_DATA_ESPRIELLA.forEach(({ id, pct, label }) => {
+          const bar = document.getElementById(id);
+          const lbl = document.getElementById(label);
+          if (bar) requestAnimationFrame(() => { bar.style.width = pct + '%'; });
+          if (lbl) lbl.textContent = pct + '%';
+        });
+        obs2.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  obs2.observe(issueSection2);
+}
