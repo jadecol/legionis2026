@@ -52,6 +52,17 @@
 #   to    = "https://TU_DOMINIO.com/:splat"
 #   status = 301
 
+# ── Redirecciones post-formulario ───────────────────────────
+[[redirects]]
+  from   = "/success-registro"
+  to     = "/?form=registro#participa"
+  status = 302
+
+[[redirects]]
+  from   = "/success-escucha"
+  to     = "/?form=escucha#escucha"
+  status = 302
+
 # ── Página de error personalizada ───────────────────────────
 [[redirects]]
   from   = "/*"

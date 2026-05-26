@@ -721,67 +721,111 @@
 
       <!-- Formulario de escucha -->
       <div>
-        <form id="form-escucha" name="escucha-ciudadana" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate aria-label="Formulario de escucha ciudadana">
-          <input type="hidden" name="form-name" value="escucha-ciudadana">
-          <input type="hidden" name="bot-field" style="display:none">
-          <div class="form-card">
-            <div class="form-card__title">
+        <!-- OPCIÓN RÁPIDA: Google Forms embebido (funciona sin backend) -->
+        <div class="form-card" id="escucha-tabs">
+          <div class="form-tabs">
+            <button class="form-tab active" onclick="switchTab('escucha','web')" id="tab-esc-web">
+              <i class="ti ti-browser" aria-hidden="true"></i> Formulario web
+            </button>
+            <button class="form-tab" onclick="switchTab('escucha','qr')" id="tab-esc-qr">
+              <i class="ti ti-qrcode" aria-hidden="true"></i> QR / WhatsApp
+            </button>
+          </div>
+
+          <!-- Panel web -->
+          <div id="panel-esc-web">
+            <div class="form-card__title" style="margin-top:1rem">
               <i class="ti ti-microphone" aria-hidden="true"></i>
               Cuéntanos qué pasa en tu región
             </div>
+            <form id="form-escucha" name="escucha-ciudadana" method="POST"
+                  data-netlify="true" netlify netlify-honeypot="bot-field"
+                  aria-label="Formulario de escucha ciudadana">
+              <input type="hidden" name="form-name" value="escucha-ciudadana">
+              <p style="display:none"><label>No llenar: <input name="bot-field"></label></p>
 
-            <div class="form-group">
-              <label for="esc-municipio">Departamento y municipio <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-              <input type="text" id="esc-municipio" name="municipio" placeholder="Ej: Córdoba, Montería" required autocomplete="off">
-            </div>
-
-            <div class="form-group">
-              <label for="esc-tema">Tema principal <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-              <select id="esc-tema" name="tema" required>
-                <option value="">Selecciona un tema…</option>
-                <option value="seguridad">Seguridad y convivencia</option>
-                <option value="empleo">Empleo y oportunidades</option>
-                <option value="salud">Salud digna</option>
-                <option value="educacion">Educación de calidad</option>
-                <option value="vias">Vías e infraestructura</option>
-                <option value="servicios">Servicios públicos</option>
-                <option value="corrupcion">Corrupción</option>
-                <option value="otro">Otro</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="esc-texto">Tu situación o propuesta <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-              <textarea
-                id="esc-texto"
-                name="descripcion"
-                placeholder="Describe qué pasa en tu barrio, municipio o región. ¿Qué te preocupa? ¿Qué cambiarías? ¿Qué necesitas?"
-                maxlength="1000"
-                data-maxchars="1000"
-                required
-                rows="5"
-              ></textarea>
-              <span class="char-count" id="esc-texto-count" aria-live="polite">1000 caracteres restantes</span>
-            </div>
-
-            <div class="form-group">
-              <label for="esc-contacto">¿Quieres que te contactemos? (opcional)</label>
-              <input type="text" id="esc-contacto" name="contacto" placeholder="Teléfono o correo electrónico" autocomplete="off">
-            </div>
-
-            <div class="legal-box" role="note">
-              <i class="ti ti-lock" aria-hidden="true"></i>
-              <span>Tus datos son confidenciales. <strong>Ley 1581 de 2012</strong>. Solo para análisis y construcción de políticas públicas. No se compartirán con terceros.</span>
-            </div>
-
-            <button type="button" class="btn btn--blue btn--full btn-submit-escucha" onclick="submitEscucha()">
-              <i class="ti ti-send" aria-hidden="true"></i>
-              Enviar mi reporte
-            </button>
+              <div class="form-group">
+                <label for="esc-municipio">Departamento y municipio *</label>
+                <input type="text" id="esc-municipio" name="municipio"
+                       placeholder="Ej: Córdoba, Montería" required>
+              </div>
+              <div class="form-group">
+                <label for="esc-tema">Tema principal *</label>
+                <select id="esc-tema" name="tema" required>
+                  <option value="">Selecciona un tema…</option>
+                  <option value="seguridad">Seguridad y convivencia</option>
+                  <option value="empleo">Empleo y oportunidades</option>
+                  <option value="salud">Salud digna</option>
+                  <option value="educacion">Educación de calidad</option>
+                  <option value="vias">Vías e infraestructura</option>
+                  <option value="servicios">Servicios públicos</option>
+                  <option value="corrupcion">Corrupción</option>
+                  <option value="campo">Campo y agro</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="esc-texto">Tu situación o propuesta *</label>
+                <textarea id="esc-texto" name="descripcion"
+                          placeholder="Describe qué pasa en tu barrio, municipio o región…"
+                          maxlength="1000" data-maxchars="1000" required rows="4"></textarea>
+                <span class="char-count" id="esc-texto-count" aria-live="polite">1000 caracteres restantes</span>
+              </div>
+              <div class="form-group">
+                <label for="esc-contacto">¿Quieres que te contactemos? (opcional)</label>
+                <input type="text" id="esc-contacto" name="contacto"
+                       placeholder="Teléfono o correo electrónico">
+              </div>
+              <div class="legal-box" role="note">
+                <i class="ti ti-lock" aria-hidden="true"></i>
+                <span>Tus datos son confidenciales. <strong>Ley 1581 de 2012</strong>. Solo para análisis de políticas públicas. No se compartirán con terceros.</span>
+              </div>
+              <button type="submit" class="btn btn--blue btn--full">
+                <i class="ti ti-send" aria-hidden="true"></i> Enviar mi reporte
+              </button>
+            </form>
           </div>
-        </form>
 
-        <div id="success-escucha" class="success-msg form-card" role="alert" aria-live="polite">
+          <!-- Panel QR -->
+          <div id="panel-esc-qr" style="display:none;padding:1rem 0">
+            <div class="qr-panel">
+              <div class="qr-option">
+                <div class="qr-box">
+                  <div class="qr-placeholder">
+                    <i class="ti ti-qrcode" style="font-size:80px;color:var(--gris-400)"></i>
+                    <p>QR de Google Forms</p>
+                    <span>Pendiente: pega tu URL de Google Forms abajo</span>
+                  </div>
+                </div>
+                <h4>Escanea y llena en tu celular</h4>
+                <p>Comparte este QR en eventos, volantes y redes. Los datos llegan directamente a tu Google Sheets.</p>
+                <a href="PEGAR_URL_GOOGLE_FORMS_ESCUCHA" target="_blank" rel="noopener noreferrer"
+                   class="btn btn--blue" style="margin-top:0.75rem;font-size:13px">
+                  <i class="ti ti-external-link" aria-hidden="true"></i> Abrir formulario
+                </a>
+              </div>
+              <div class="qr-option">
+                <div class="qr-box qr-box--whatsapp">
+                  <i class="ti ti-brand-whatsapp" style="font-size:64px;color:#25D366"></i>
+                </div>
+                <h4>Enviar por WhatsApp</h4>
+                <p>El ciudadano responde directamente por WhatsApp al número de campaña.</p>
+                <a href="https://wa.me/57NUMERO_CAMPAÑA?text=Quiero%20reportar%20una%20necesidad%20en%20mi%20municipio"
+                   target="_blank" rel="noopener noreferrer"
+                   class="btn btn--full" style="background:#25D366;color:#fff;border-color:#25D366;margin-top:0.75rem;font-size:13px">
+                  <i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Abrir en WhatsApp
+                </a>
+              </div>
+            </div>
+            <div class="qr-instrucciones">
+              <i class="ti ti-info-circle" aria-hidden="true"></i>
+              <span>Para generar el QR: crea el Google Form → copia la URL → pégala en el código → genera el QR en <strong>qr-code-generator.com</strong> gratis.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensaje de éxito -->
+        <div id="success-escucha" class="success-msg form-card" role="alert" aria-live="polite" style="display:none">
           <div class="success-circle"><i class="ti ti-check" aria-hidden="true"></i></div>
           <h3>¡Gracias por compartir!</h3>
           <p>Tu reporte fue recibido. Será parte de la agenda de gobierno del presidente Espriella desde el primer día.</p>
@@ -866,104 +910,163 @@
 
       <!-- Formulario de registro -->
       <div>
-        <form id="form-registro" name="registro-defensores" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate aria-label="Formulario de registro oficial">
-          <input type="hidden" name="form-name" value="registro-defensores">
-          <input type="hidden" name="bot-field" style="display:none">
-          <div class="form-card">
-            <div class="form-card__title">
+        <div class="form-card" id="registro-tabs">
+          <div class="form-tabs">
+            <button class="form-tab active" onclick="switchTab('registro','web')" id="tab-reg-web">
+              <i class="ti ti-browser" aria-hidden="true"></i> Formulario web
+            </button>
+            <button class="form-tab" onclick="switchTab('registro','qr')" id="tab-reg-qr">
+              <i class="ti ti-qrcode" aria-hidden="true"></i> QR / WhatsApp
+            </button>
+          </div>
+
+          <!-- Panel web -->
+          <div id="panel-reg-web">
+            <div class="form-card__title" style="margin-top:1rem">
               <i class="ti ti-user-plus" aria-hidden="true"></i>
               Registro oficial — Defensores de la Patria
             </div>
 
-            <div class="form-row">
-              <div class="form-group" style="margin-bottom:0">
-                <label for="reg-nombres">Nombres <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-                <input type="text" id="reg-nombres" name="nombres" placeholder="Tu nombre" required autocomplete="given-name">
-              </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label for="reg-apellidos">Apellidos <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-                <input type="text" id="reg-apellidos" name="apellidos" placeholder="Tus apellidos" required autocomplete="family-name">
-              </div>
-            </div>
+            <form id="form-registro" name="registro-defensores" method="POST"
+                  data-netlify="true" netlify netlify-honeypot="bot-field"
+                  aria-label="Formulario de registro oficial">
+              <input type="hidden" name="form-name" value="registro-defensores">
+              <p style="display:none"><label>No llenar: <input name="bot-field"></label></p>
 
-            <div class="form-group">
-              <label for="reg-cedula">Número de cédula <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-              <input type="text" id="reg-cedula" name="cedula" placeholder="Cédula de ciudadanía" required autocomplete="off" inputmode="numeric">
-            </div>
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="reg-nombres">Nombres *</label>
+                  <input type="text" id="reg-nombres" name="nombres"
+                         placeholder="Tu nombre" required autocomplete="given-name">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="reg-apellidos">Apellidos *</label>
+                  <input type="text" id="reg-apellidos" name="apellidos"
+                         placeholder="Tus apellidos" required autocomplete="family-name">
+                </div>
+              </div>
 
-            <div class="form-row">
-              <div class="form-group" style="margin-bottom:0">
-                <label for="reg-departamento">Departamento <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-                <select id="reg-departamento" name="departamento" required>
-                  <option value="">Selecciona…</option>
-                  <option>Amazonas</option><option>Antioquia</option><option>Arauca</option>
-                  <option>Atlántico</option><option>Bolívar</option><option>Boyacá</option>
-                  <option>Caldas</option><option>Caquetá</option><option>Casanare</option>
-                  <option>Cauca</option><option>Cesar</option><option>Chocó</option>
-                  <option>Córdoba</option><option>Cundinamarca</option><option>Guainía</option>
-                  <option>Guaviare</option><option>Huila</option><option>La Guajira</option>
-                  <option>Magdalena</option><option>Meta</option><option>Nariño</option>
-                  <option>Norte de Santander</option><option>Putumayo</option><option>Quindío</option>
-                  <option>Risaralda</option><option>San Andrés y Providencia</option>
-                  <option>Santander</option><option>Sucre</option><option>Tolima</option>
-                  <option>Valle del Cauca</option><option>Vaupés</option><option>Vichada</option>
-                  <option>Bogotá D.C.</option>
+              <div class="form-group">
+                <label for="reg-cedula">Número de cédula *</label>
+                <input type="text" id="reg-cedula" name="cedula"
+                       placeholder="Cédula de ciudadanía" required inputmode="numeric">
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="reg-departamento">Departamento *</label>
+                  <select id="reg-departamento" name="departamento" required>
+                    <option value="">Selecciona…</option>
+                    <option>Amazonas</option><option>Antioquia</option><option>Arauca</option>
+                    <option>Atlántico</option><option>Bolívar</option><option>Boyacá</option>
+                    <option>Caldas</option><option>Caquetá</option><option>Casanare</option>
+                    <option>Cauca</option><option>Cesar</option><option>Chocó</option>
+                    <option>Córdoba</option><option>Cundinamarca</option><option>Guainía</option>
+                    <option>Guaviare</option><option>Huila</option><option>La Guajira</option>
+                    <option>Magdalena</option><option>Meta</option><option>Nariño</option>
+                    <option>Norte de Santander</option><option>Putumayo</option><option>Quindío</option>
+                    <option>Risaralda</option><option>San Andrés y Providencia</option>
+                    <option>Santander</option><option>Sucre</option><option>Tolima</option>
+                    <option>Valle del Cauca</option><option>Vaupés</option><option>Vichada</option>
+                    <option>Bogotá D.C.</option>
+                  </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="reg-municipio">Municipio *</label>
+                  <input type="text" id="reg-municipio" name="municipio"
+                         placeholder="Tu municipio" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-barrio">Barrio / Vereda</label>
+                <input type="text" id="reg-barrio" name="barrio" placeholder="Tu barrio o vereda">
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="reg-celular">Celular *</label>
+                  <input type="tel" id="reg-celular" name="celular"
+                         placeholder="+57 300 000 0000" required inputmode="tel">
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="reg-email">Correo electrónico *</label>
+                  <input type="email" id="reg-email" name="email"
+                         placeholder="tu@correo.com" required inputmode="email">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="tipo-participacion">Tipo de participación *</label>
+                <select id="tipo-participacion" name="tipoParticipacion" required>
+                  <option value="">Selecciona tu rol…</option>
+                  <option value="1">1 — Simpatizante</option>
+                  <option value="2">2 — Colaborador activo</option>
+                  <option value="3">3 — Testigo Electoral (prioridad · 31 mayo)</option>
                 </select>
               </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label for="reg-municipio">Municipio <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-                <input type="text" id="reg-municipio" name="municipio" placeholder="Tu municipio" required autocomplete="off">
+
+              <div class="form-group">
+                <label for="reg-experiencia">Experiencia en procesos electorales</label>
+                <select id="reg-experiencia" name="experienciaElectoral">
+                  <option value="si">Sí, he participado antes</option>
+                  <option value="no">No, es mi primera vez</option>
+                  <option value="no-seguro">No estoy seguro/a</option>
+                </select>
               </div>
-            </div>
 
-            <div class="form-group">
-              <label for="reg-barrio">Barrio / Vereda</label>
-              <input type="text" id="reg-barrio" name="barrio" placeholder="Tu barrio o vereda" autocomplete="off">
-            </div>
-
-            <div class="form-row">
-              <div class="form-group" style="margin-bottom:0">
-                <label for="reg-celular">Celular <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-                <input type="tel" id="reg-celular" name="celular" placeholder="+57 300 000 0000" required autocomplete="tel" inputmode="tel">
+              <div class="legal-box" role="note">
+                <i class="ti ti-lock" aria-hidden="true"></i>
+                <span>Al registrarte, autorizas el uso de tus datos conforme a la <strong>Ley 1581 de 2012</strong>. Uso exclusivo para organización interna. No se entregará a terceros sin tu autorización.</span>
               </div>
-              <div class="form-group" style="margin-bottom:0">
-                <label for="reg-email">Correo electrónico <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-                <input type="email" id="reg-email" name="email" placeholder="tu@correo.com" required autocomplete="email" inputmode="email">
-              </div>
-            </div>
 
-            <div class="form-group">
-              <label for="tipo-participacion">Tipo de participación <span aria-hidden="true" style="color:#E24B4A">*</span></label>
-              <select id="tipo-participacion" name="tipoParticipacion" required>
-                <option value="">Selecciona tu rol…</option>
-                <option value="1">1 — Simpatizante</option>
-                <option value="2">2 — Colaborador activo</option>
-                <option value="3">3 — Testigo Electoral (prioridad · 31 mayo)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="reg-experiencia">Experiencia en procesos electorales</label>
-              <select id="reg-experiencia" name="experienciaElectoral">
-                <option value="si">Sí, he participado antes</option>
-                <option value="no">No, es mi primera vez</option>
-                <option value="no-seguro">No estoy seguro/a</option>
-              </select>
-            </div>
-
-            <div class="legal-box" role="note">
-              <i class="ti ti-lock" aria-hidden="true"></i>
-              <span>Al registrarte, autorizas el uso de tus datos conforme a la <strong>Ley 1581 de 2012</strong>. Uso exclusivo para organización interna. No se entregará a terceros sin tu autorización.</span>
-            </div>
-
-            <button type="button" class="btn btn--blue btn--full btn-submit-registro" onclick="submitRegistro()">
-              <i class="ti ti-check" aria-hidden="true"></i>
-              Confirmar mi registro
-            </button>
+              <button type="submit" class="btn btn--blue btn--full">
+                <i class="ti ti-check" aria-hidden="true"></i>
+                Confirmar mi registro
+              </button>
+            </form>
           </div>
-        </form>
 
-        <div id="success-registro" class="success-msg form-card" role="alert" aria-live="polite">
+          <!-- Panel QR -->
+          <div id="panel-reg-qr" style="display:none;padding:1rem 0">
+            <div class="qr-panel">
+              <div class="qr-option">
+                <div class="qr-box">
+                  <div class="qr-placeholder">
+                    <i class="ti ti-qrcode" style="font-size:80px;color:var(--gris-400)"></i>
+                    <p>QR de Google Forms</p>
+                    <span>Pendiente: pega tu URL de Google Forms abajo</span>
+                  </div>
+                </div>
+                <h4>Registro por QR</h4>
+                <p>Imprímelo en volantes, camisetas y material de campaña. Cada escaneo registra un nuevo defensor.</p>
+                <a href="PEGAR_URL_GOOGLE_FORMS_REGISTRO" target="_blank" rel="noopener noreferrer"
+                   class="btn btn--blue" style="margin-top:0.75rem;font-size:13px">
+                  <i class="ti ti-external-link" aria-hidden="true"></i> Abrir formulario de registro
+                </a>
+              </div>
+              <div class="qr-option">
+                <div class="qr-box qr-box--whatsapp">
+                  <i class="ti ti-brand-whatsapp" style="font-size:64px;color:#25D366"></i>
+                </div>
+                <h4>Registro por WhatsApp</h4>
+                <p>El ciudadano responde por WhatsApp con nombre, cédula y municipio. Ideal para adultos mayores.</p>
+                <a href="https://wa.me/57NUMERO_CAMPAÑA?text=Quiero%20registrarme%20como%20Defensor%20de%20la%20Patria"
+                   target="_blank" rel="noopener noreferrer"
+                   class="btn btn--full" style="background:#25D366;color:#fff;border-color:#25D366;margin-top:0.75rem;font-size:13px">
+                  <i class="ti ti-brand-whatsapp" aria-hidden="true"></i> Registrarme por WhatsApp
+                </a>
+              </div>
+            </div>
+            <div class="qr-instrucciones">
+              <i class="ti ti-info-circle" aria-hidden="true"></i>
+              <span>Para generar el QR: crea el Google Form con los mismos campos → copia la URL → genera el QR en <strong>qr-code-generator.com</strong> → descarga en PNG o SVG para imprimir.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensaje de éxito (para redireccionamiento Netlify) -->
+        <div id="success-registro" class="success-msg form-card" role="alert" style="display:none">
           <div class="success-circle"><i class="ti ti-check" aria-hidden="true"></i></div>
           <h3>¡Bienvenido/a a Defensores de la Patria!</h3>
           <p>Te contactaremos pronto. Colombia y Abelardo De La Espriella necesitan gente como tú.</p>

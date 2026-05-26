@@ -486,3 +486,52 @@ if (issueSection2) {
   }, { threshold: 0.3 });
   obs2.observe(issueSection2);
 }
+
+
+/* ════════════════════════════════════════════════════════
+   TABS: cambiar entre formulario web y QR/WhatsApp
+════════════════════════════════════════════════════════ */
+window.switchTab = function(form, panel) {
+  // Tabs
+  const webTab = document.getElementById('tab-' + form + '-web');
+  const qrTab  = document.getElementById('tab-' + form + '-qr');
+  if (webTab) webTab.classList.toggle('active', panel === 'web');
+  if (qrTab)  qrTab.classList.toggle('active',  panel === 'qr');
+
+  // Paneles
+  const webPanel = document.getElementById('panel-' + form + '-web');
+  const qrPanel  = document.getElementById('panel-' + form + '-qr');
+  if (webPanel) webPanel.style.display = panel === 'web' ? '' : 'none';
+  if (qrPanel)  qrPanel.style.display  = panel === 'qr'  ? '' : 'none';
+};
+
+/* ════════════════════════════════════════════════════════
+   NETLIFY FORMS: redireccionamiento post-envío nativo
+   Los formularios usan type="submit" — Netlify los procesa
+   y redirige. Mostramos éxito con parámetro URL.
+════════════════════════════════════════════════════════ */
+(function checkFormSuccess() {
+  const params = new URLSearchParams(window.location.search);
+  // Netlify redirige a /?form=registro o /?form=escucha tras enviar
+  const form = params.get('form');
+  if (form === 'registro') {
+    const fReg = document.getElementById('form-registro');
+    const sReg = document.getElementById('success-registro');
+    if (fReg) fReg.style.display = 'none';
+    if (sReg) sReg.style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('participa')?.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+  }
+  if (form === 'escucha') {
+    const fEsc = document.getElementById('form-escucha');
+    const sEsc = document.getElementById('success-escucha');
+    const pEsc = document.getElementById('panel-esc-web');
+    if (fEsc) fEsc.style.display = 'none';
+    if (pEsc) pEsc.style.display = 'none';
+    if (sEsc) sEsc.style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('escucha')?.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
+  }
+})();
