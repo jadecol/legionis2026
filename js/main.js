@@ -198,16 +198,16 @@ function initPartOptions() {
 document.addEventListener('DOMContentLoaded', initPartOptions);
 
 
-/* ── 8. VALIDACIÓN Y ENVÍO — ESCUCHA CIUDADANA ──────────── */
-window.submitEscucha = function () {
+/* ── 8. ENVÍO REAL — ESCUCHA CIUDADANA → NETLIFY FORMS ──── */
+window.submitEscucha = async function () {
   const form = document.getElementById('form-escucha');
   if (!form) return;
 
-  // Validación mínima
   const municipio = form.querySelector('#esc-municipio');
-  const tema = form.querySelector('#esc-tema');
-  const texto = form.querySelector('#esc-texto');
+  const tema      = form.querySelector('#esc-tema');
+  const texto     = form.querySelector('#esc-texto');
 
+  // Validación
   let valid = true;
   [municipio, tema, texto].forEach(field => {
     if (!field) return;
@@ -218,58 +218,46 @@ window.submitEscucha = function () {
       field.style.borderColor = '';
     }
   });
+  if (!valid) { showToast('Por favor completa los campos obligatorios.', 'error'); return; }
 
-  if (!valid) {
-    showToast('Por favor completa los campos obligatorios.', 'error');
-    return;
-  }
-
-  // Simular envío (reemplazar por fetch al API Java)
   const btn = form.querySelector('.btn-submit-escucha');
   btn.disabled = true;
-  btn.textContent = 'Enviando…';
+  btn.innerHTML = '<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Enviando…';
 
-  setTimeout(() => {
-    form.style.display = 'none';
-    const success = document.getElementById('success-escucha');
-    if (success) success.style.display = 'block';
-  }, 1200);
+  try {
+    // Netlify Forms acepta application/x-www-form-urlencoded
+    const data = new FormData(form);
+    const response = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString(),
+    });
 
-  /*
-  // ── INTEGRACIÓN FUTURA CON BACKEND JAVA ────────────────
-  // Cuando el backend esté listo, reemplazar el setTimeout por:
-  //
-  // const payload = {
-  //   municipio: municipio.value.trim(),
-  //   tema: tema.value,
-  //   descripcion: texto.value.trim(),
-  //   contacto: form.querySelector('#esc-contacto')?.value.trim() || null,
-  // };
-  //
-  // fetch('/api/v1/escucha', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(payload),
-  // })
-  // .then(res => res.ok ? res.json() : Promise.reject(res))
-  // .then(() => { form.style.display = 'none'; success.style.display = 'block'; })
-  // .catch(() => showToast('Error al enviar. Intenta de nuevo.', 'error'))
-  // .finally(() => { btn.disabled = false; btn.textContent = 'Enviar mi reporte'; });
-  */
+    if (response.ok) {
+      form.style.display = 'none';
+      const success = document.getElementById('success-escucha');
+      if (success) success.style.display = 'block';
+    } else {
+      throw new Error('Error ' + response.status);
+    }
+  } catch (err) {
+    console.error('Error al enviar escucha:', err);
+    showToast('Error al enviar. Intenta de nuevo en un momento.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-send"></i> Enviar mi reporte';
+  }
 };
 
 
-/* ── 9. VALIDACIÓN Y ENVÍO — REGISTRO DE PARTICIPANTES ───── */
-window.submitRegistro = function () {
+/* ── 9. ENVÍO REAL — REGISTRO → NETLIFY FORMS ───────────── */
+window.submitRegistro = async function () {
   const form = document.getElementById('form-registro');
   if (!form) return;
 
-  const required = [
-    'reg-nombres', 'reg-apellidos', 'reg-cedula',
-    'reg-departamento', 'reg-municipio', 'reg-celular', 'reg-email'
-  ];
-
+  const required = ['reg-nombres','reg-apellidos','reg-cedula',
+                    'reg-departamento','reg-municipio','reg-celular','reg-email'];
   let valid = true;
+
   required.forEach(id => {
     const field = form.querySelector('#' + id);
     if (!field) return;
@@ -281,14 +269,12 @@ window.submitRegistro = function () {
     }
   });
 
-  // Validar tipo de participación seleccionado
   const tipo = form.querySelector('#tipo-participacion');
   if (!tipo || !tipo.value) {
     showToast('Selecciona tu tipo de participación.', 'error');
     valid = false;
   }
 
-  // Validar email básico
   const emailField = form.querySelector('#reg-email');
   if (emailField && emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
     emailField.style.borderColor = '#E24B4A';
@@ -296,46 +282,33 @@ window.submitRegistro = function () {
     valid = false;
   }
 
-  if (!valid) {
-    showToast('Por favor completa todos los campos obligatorios.', 'error');
-    return;
-  }
+  if (!valid) { showToast('Por favor completa todos los campos obligatorios.', 'error'); return; }
 
   const btn = form.querySelector('.btn-submit-registro');
   btn.disabled = true;
-  btn.textContent = 'Registrando…';
+  btn.innerHTML = '<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i> Registrando…';
 
-  setTimeout(() => {
-    form.style.display = 'none';
-    const success = document.getElementById('success-registro');
-    if (success) success.style.display = 'block';
-  }, 1400);
+  try {
+    const data = new FormData(form);
+    const response = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString(),
+    });
 
-  /*
-  // ── INTEGRACIÓN FUTURA CON BACKEND JAVA ────────────────
-  // const payload = {
-  //   nombres:         form.querySelector('#reg-nombres').value.trim(),
-  //   apellidos:       form.querySelector('#reg-apellidos').value.trim(),
-  //   cedula:          form.querySelector('#reg-cedula').value.trim(),
-  //   departamento:    form.querySelector('#reg-departamento').value,
-  //   municipio:       form.querySelector('#reg-municipio').value.trim(),
-  //   barrio:          form.querySelector('#reg-barrio').value.trim(),
-  //   celular:         form.querySelector('#reg-celular').value.trim(),
-  //   email:           form.querySelector('#reg-email').value.trim(),
-  //   tipoParticipacion: parseInt(form.querySelector('#tipo-participacion').value, 10),
-  //   experienciaElectoral: form.querySelector('#reg-experiencia').value,
-  // };
-  //
-  // fetch('/api/v1/registro', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(payload),
-  // })
-  // .then(res => res.ok ? res.json() : Promise.reject(res))
-  // .then(() => { form.style.display = 'none'; success.style.display = 'block'; })
-  // .catch(() => showToast('Error al registrar. Intenta de nuevo.', 'error'))
-  // .finally(() => { btn.disabled = false; btn.textContent = 'Confirmar mi registro'; });
-  */
+    if (response.ok) {
+      form.style.display = 'none';
+      const success = document.getElementById('success-registro');
+      if (success) success.style.display = 'block';
+    } else {
+      throw new Error('Error ' + response.status);
+    }
+  } catch (err) {
+    console.error('Error al registrar:', err);
+    showToast('Error al registrar. Intenta de nuevo en un momento.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-check"></i> Confirmar mi registro';
+  }
 };
 
 
