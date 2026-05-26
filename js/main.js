@@ -419,25 +419,32 @@ window.addEventListener('scroll', updateActiveNav, { passive: true });
     });
   }
 
+  function setElectionDayDisplay() {
+    // Día de elecciones: estilo especial en los dígitos
+    ['cd-dias','cd-horas','cd-min','cd-seg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('election-day');
+    });
+    const label = document.getElementById('countdown-label');
+    if (label) label.innerHTML = '<i class="ti ti-confetti" style="color:#5DCAA5"></i> ¡HOY ES EL DÍA · 31 DE MAYO!';
+  }
+
   function tick() {
     const now  = new Date();
     const wrap = document.querySelector('.hero__countdown');
 
     // Estado 1: Día de elecciones — urnas abiertas
     if (now >= ELECTION_OPEN && now < ELECTION_CLOSE) {
-      const label = document.querySelector('.countdown__label');
-      if (label) label.textContent = '🗳️ HOY · Urnas abiertas hasta las 4:00 PM';
-      if (wrap) wrap.classList.add('countdown--ended');
       setDisplay('HOY', '¡VOTA', 'AHORA', '!');
+      setElectionDayDisplay();
       return;
     }
 
     // Estado 2: Elecciones terminadas
     if (now >= ELECTION_CLOSE) {
-      const label = document.querySelector('.countdown__label');
-      if (label) label.textContent = '✅ Elecciones realizadas · ¡Gracias Colombia!';
-      if (wrap) wrap.classList.add('countdown--ended');
       setDisplay('✅', '✅', '✅', '✅');
+      const label = document.getElementById('countdown-label');
+      if (label) label.innerHTML = '<i class="ti ti-heart"></i> ¡Gracias Colombia! · Elecciones realizadas';
       return;
     }
 
@@ -533,5 +540,85 @@ window.switchTab = function(form, panel) {
     setTimeout(() => {
       document.getElementById('escucha')?.scrollIntoView({ behavior: 'smooth' });
     }, 300);
+  }
+})();
+
+
+/* ════════════════════════════════════════════════════════
+   BANNER DE URGENCIA — dinámico según días reales
+   Nunca más hardcodeado
+════════════════════════════════════════════════════════ */
+(function initUrgenciaBanner() {
+  const ELECTION = new Date('2026-05-31T08:00:00-05:00');
+  const CLOSE    = new Date('2026-05-31T16:00:00-05:00');
+  const now      = new Date();
+
+  const banner   = document.getElementById('urgencia-banner');
+  const titulo   = document.getElementById('urgencia-titulo');
+  const subtitulo = document.getElementById('urgencia-subtitulo');
+  if (!banner || !titulo || !subtitulo) return;
+
+  const diffMs   = ELECTION - now;
+  const diffDias = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  // Post-elección: ocultar banner
+  if (now >= CLOSE) { banner.style.display = 'none'; return; }
+
+  // Día de elecciones
+  if (now >= ELECTION && now < CLOSE) {
+    banner.style.background = 'linear-gradient(135deg, #EAF3DE, #D4EDDA)';
+    banner.style.borderColor = '#1D9E75';
+    banner.style.color = '#085041';
+    titulo.textContent = '🗳️ ¡HOY ES EL DÍA! Urnas abiertas hasta las 4:00 PM';
+    subtitulo.textContent = 'Defiende tu voto. Testigos: estén en su mesa asignada.';
+    banner.style.display = 'flex';
+    return;
+  }
+
+  // Urgencia extrema: día siguiente
+  if (diffDias <= 1) {
+    banner.style.borderColor = '#E24B4A';
+    titulo.textContent = '🚨 ¡MAÑANA SON LAS ELECCIONES!';
+    subtitulo.textContent = 'Último día para confirmar testigos electorales. ¡Regístrate ahora!';
+    banner.style.display = 'flex';
+    return;
+  }
+
+  // Urgencia alta: 2 días o menos
+  if (diffDias <= 2) {
+    titulo.textContent = `⚡ ¡Faltan solo ${diffDias} días para el 31 de mayo!`;
+    subtitulo.textContent = 'Necesitamos testigos electorales en cada mesa. Regístrate ya.';
+    banner.style.display = 'flex';
+    return;
+  }
+
+  // Normal: más de 2 días
+  if (diffDias <= 10) {
+    titulo.textContent = `¡Faltan ${diffDias} días para el 31 de mayo!`;
+    subtitulo.textContent = 'Necesitamos testigos electorales en cada mesa de votación del país. Si puedes estar presente, regístrate ahora.';
+    banner.style.display = 'flex';
+    return;
+  }
+
+  // Más de 10 días: no mostrar banner de urgencia
+  banner.style.display = 'none';
+})();
+
+
+/* ════════════════════════════════════════════════════════
+   COUNTDOWN: urgencia visual cuando faltan < 2 días
+════════════════════════════════════════════════════════ */
+(function patchCountdownUrgency() {
+  const ELECTION = new Date('2026-05-31T08:00:00-05:00');
+  const diffMs   = ELECTION - new Date();
+  const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDias < 2) {
+    // Aplicar clase urgente a todos los números del countdown
+    setTimeout(() => {
+      document.querySelectorAll('.countdown-big__num').forEach(el => {
+        el.classList.add('urgent');
+      });
+    }, 500);
   }
 })();

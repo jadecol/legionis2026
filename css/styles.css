@@ -1275,3 +1275,231 @@ footer {
 @media (max-width: 600px) {
   .qr-panel { grid-template-columns: 1fr; }
 }
+
+
+/* ════════════════════════════════════════════════════════
+   MODERNIZACIÓN VISUAL — Tipo App · Mayo 2026
+════════════════════════════════════════════════════════ */
+
+/* ── HERO rediseñado ─────────────────────────────────────── */
+#hero {
+  background:
+    radial-gradient(ellipse at 15% 60%, rgba(29,158,117,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 20%, rgba(55,138,221,0.20) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(4,44,83,0.5) 0%, transparent 60%),
+    linear-gradient(145deg, #021D38 0%, #042C53 40%, #0B3D6B 70%, #0F5040 100%);
+}
+
+/* Orbes flotantes de fondo */
+#hero::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(29,158,117,0.08) 0%, transparent 70%);
+  top: -100px; right: -100px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatOrb 8s ease-in-out infinite;
+}
+@keyframes floatOrb {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-30px) scale(1.05); }
+}
+
+/* ── COUNTDOWN GRANDE — el protagonista ──────────────────── */
+.hero__countdown--big {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.75rem;
+}
+
+.countdown-big__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.countdown-big__label i { font-size: 15px; color: #5DCAA5; }
+
+.countdown-big__clocks {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.countdown-big__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.countdown-big__num {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 8vw, 80px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  /* Glassmorphism card por dígito */
+  background: rgba(255,255,255,0.07);
+  border: 0.5px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 0.3em 0.45em;
+  min-width: 1.6em;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: transform 0.15s;
+  position: relative;
+  /* Línea separadora a la mitad — efecto split-flap */
+  overflow: hidden;
+}
+.countdown-big__num::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+
+.countdown-big__lbl {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.countdown-big__sep {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 60px);
+  font-weight: 300;
+  color: rgba(255,255,255,0.25);
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+/* Urgencia: cuando faltan menos de 2 días */
+.countdown-big__num.urgent {
+  background: rgba(239,159,39,0.15);
+  border-color: rgba(239,159,39,0.4);
+  color: #EF9F27;
+  animation: urgentPulse 1s ease-in-out infinite;
+}
+@keyframes urgentPulse {
+  0%, 100% { box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 0 0 0 rgba(239,159,39,0); }
+  50%       { box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 0 0 8px rgba(239,159,39,0.15); }
+}
+
+/* Día de elecciones */
+.countdown-big__num.election-day {
+  background: rgba(93,202,165,0.2);
+  border-color: rgba(93,202,165,0.5);
+  color: #5DCAA5;
+  font-size: clamp(24px, 4vw, 36px);
+  padding: 0.4em 0.6em;
+}
+
+/* ── GLASSMORPHISM cards en toda la landing ──────────────── */
+.moat-card {
+  backdrop-filter: blur(0);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s, background 0.25s;
+}
+.moat-card:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+}
+
+/* ── SECCIÓN ALTERNATIVA: fondo con textura sutil ─────────── */
+.section--alt {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(24,95,165,0.04) 0%, transparent 50%),
+    var(--gris-100);
+}
+
+/* ── CARDS con borde superior de color ─────────────────────── */
+.prop-card {
+  border-top: 3px solid transparent;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.prop-card:nth-child(4n+1) { border-top-color: var(--azul-vivo); }
+.prop-card:nth-child(4n+2) { border-top-color: var(--verde-vivo); }
+.prop-card:nth-child(4n+3) { border-top-color: var(--naranja-medio); }
+.prop-card:nth-child(4n+4) { border-top-color: #534AB7; }
+
+/* ── FORMULARIOS: estilo más moderno ───────────────────────── */
+.form-card {
+  border-radius: 20px;
+  box-shadow:
+    0 1px 3px rgba(4,44,83,0.06),
+    0 8px 24px rgba(4,44,83,0.08);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  background: #fff;
+  box-shadow:
+    0 0 0 3px rgba(24,95,165,0.12),
+    0 1px 2px rgba(0,0,0,0.06);
+}
+.btn--blue {
+  background: linear-gradient(135deg, var(--azul-vivo) 0%, var(--azul-medio) 100%);
+  box-shadow: 0 4px 12px rgba(24,95,165,0.3);
+  transition: all 0.2s var(--ease);
+}
+.btn--blue:hover {
+  background: linear-gradient(135deg, var(--azul-claro) 0%, var(--azul-vivo) 100%);
+  box-shadow: 0 6px 20px rgba(24,95,165,0.4);
+  transform: translateY(-2px);
+}
+
+/* ── NAVBAR: glass effect al hacer scroll ──────────────────── */
+#navbar.scrolled {
+  background: rgba(2,29,56,0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── CONTINUIDAD: cards más modernas ──────────────────────── */
+.phase-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.phase-card:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+}
+
+/* ── TRANSP CARDS ──────────────────────────────────────────── */
+.transp-card {
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.transp-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(4,44,83,0.10);
+}
+
+/* ── FOOTER más moderno ────────────────────────────────────── */
+footer {
+  background: linear-gradient(180deg, #021220 0%, #010C18 100%);
+}
+
+/* ── RESPONSIVE countdown grande ──────────────────────────── */
+@media (max-width: 600px) {
+  .countdown-big__num { font-size: 42px; padding: 0.25em 0.35em; border-radius: 12px; }
+  .countdown-big__sep { font-size: 32px; margin-bottom: 16px; }
+  .countdown-big__clocks { gap: 5px; }
+}

@@ -94,37 +94,54 @@
   <div id="hero">
     <div class="wrap hero__content">
 
-      <!-- Countdown urgente -->
-      <div class="hero__countdown fade-in" role="timer" aria-label="Tiempo restante para las elecciones">
-        <span class="countdown__label">Elecciones · 31 de mayo de 2026</span>
-        <div class="countdown__clocks">
-          <div class="countdown__unit"><span id="cd-dias">--</span><small>días</small></div>
-          <div class="countdown__sep" aria-hidden="true">:</div>
-          <div class="countdown__unit"><span id="cd-horas">00</span><small>horas</small></div>
-          <div class="countdown__sep" aria-hidden="true">:</div>
-          <div class="countdown__unit"><span id="cd-min">00</span><small>min</small></div>
-          <div class="countdown__sep" aria-hidden="true">:</div>
-          <div class="countdown__unit"><span id="cd-seg">00</span><small>seg</small></div>
-        </div>
-      </div>
-
-      <div class="hero__badge fade-in" data-delay="1">
+      <!-- Badge movimiento -->
+      <div class="hero__badge fade-in">
         <span class="hero__badge-dot" aria-hidden="true"></span>
         Movimiento Defensores de la Patria · Colombia 2026
       </div>
 
-      <h1 id="hero-title" class="hero__title fade-up" data-delay="2">
+      <!-- Título principal -->
+      <h1 id="hero-title" class="hero__title fade-up" data-delay="1">
         Abelardo De La Espriella<br>
         <em>Presidente de Colombia</em>
       </h1>
 
-      <p class="hero__sub fade-up" data-delay="3">
+      <p class="hero__sub fade-up" data-delay="2">
         Abogado, colombiano de verdad, candidato del pueblo. Juntos vamos a hacer el milagro
         que Colombia necesita — con mano firme, transparencia total y un gobierno al servicio de la gente.
       </p>
 
+      <!-- COUNTDOWN PROMINENTE -->
+      <div class="hero__countdown--big fade-up" data-delay="3" role="timer" aria-label="Tiempo restante para las elecciones">
+        <div class="countdown-big__label" id="countdown-label">
+          <i class="ti ti-calendar-event" aria-hidden="true"></i>
+          Elecciones · 31 de mayo de 2026
+        </div>
+        <div class="countdown-big__clocks">
+          <div class="countdown-big__unit">
+            <div class="countdown-big__num" id="cd-dias">--</div>
+            <div class="countdown-big__lbl">días</div>
+          </div>
+          <div class="countdown-big__sep">:</div>
+          <div class="countdown-big__unit">
+            <div class="countdown-big__num" id="cd-horas">00</div>
+            <div class="countdown-big__lbl">horas</div>
+          </div>
+          <div class="countdown-big__sep">:</div>
+          <div class="countdown-big__unit">
+            <div class="countdown-big__num" id="cd-min">00</div>
+            <div class="countdown-big__lbl">min</div>
+          </div>
+          <div class="countdown-big__sep">:</div>
+          <div class="countdown-big__unit">
+            <div class="countdown-big__num" id="cd-seg">00</div>
+            <div class="countdown-big__lbl">seg</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Banner cómo votar -->
-      <div class="como-votar-banner fade-up" data-delay="3" role="note">
+      <div class="como-votar-banner fade-up" data-delay="4" role="note">
         <div class="cvb-inner">
           <span class="cvb-title">📋 ¿Cómo votar por El Tigre el 31 de mayo?</span>
           <span class="cvb-steps">Tarjetón presidencial → busca <strong>Defensores de la Patria</strong> → marca la raya al frente del tigre</span>
@@ -134,7 +151,7 @@
         </a>
       </div>
 
-      <div class="hero__btns fade-up" data-delay="4">
+      <div class="hero__btns fade-up" data-delay="5">
         <a href="#participa" class="btn btn--primary">
           <i class="ti ti-user-plus" aria-hidden="true"></i>
           Quiero participar
@@ -842,13 +859,12 @@
 <section id="participa" class="section section--alt" aria-labelledby="participa-title">
   <div class="wrap">
 
-    <!-- Banner urgencia electoral -->
-    <div class="urgencia-banner" role="alert">
+    <!-- Banner urgencia electoral — texto generado por JS según días reales -->
+    <div id="urgencia-banner" class="urgencia-banner" role="alert" style="display:none">
       <i class="ti ti-alert-triangle" aria-hidden="true"></i>
-      <div>
-        <strong>¡Faltan 6 días para el 31 de mayo!</strong>
-        Necesitamos testigos electorales en cada mesa de votación del país.
-        Si puedes estar presente el día de las elecciones, regístrate ahora.
+      <div id="urgencia-texto">
+        <strong id="urgencia-titulo"></strong>
+        <span id="urgencia-subtitulo"></span>
       </div>
     </div>
 
