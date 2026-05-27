@@ -549,59 +549,64 @@ window.switchTab = function(form, panel) {
    Nunca más hardcodeado
 ════════════════════════════════════════════════════════ */
 (function initUrgenciaBanner() {
-  const ELECTION = new Date('2026-05-31T08:00:00-05:00');
-  const CLOSE    = new Date('2026-05-31T16:00:00-05:00');
-  const now      = new Date();
+  const ELECTION    = new Date('2026-05-31T08:00:00-05:00');
+  const CLOSE       = new Date('2026-05-31T16:00:00-05:00');
+  const CAMPAIGN_START = new Date('2026-03-01T00:00:00-05:00');
+  const now         = new Date();
 
-  const banner   = document.getElementById('urgencia-banner');
-  const titulo   = document.getElementById('urgencia-titulo');
-  const subtitulo = document.getElementById('urgencia-subtitulo');
-  if (!banner || !titulo || !subtitulo) return;
+  const banner      = document.getElementById('urgencia-banner');
+  const titulo      = document.getElementById('urgencia-titulo');
+  const subtitulo   = document.getElementById('urgencia-subtitulo');
+  const fill        = document.getElementById('urgencia-fill');
+  const diasLabel   = document.getElementById('urgencia-dias-label');
+  if (!banner || !titulo) return;
 
-  const diffMs   = ELECTION - now;
-  const diffDias = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const diffMs      = ELECTION - now;
+  const diffDias    = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const totalDias   = Math.ceil((ELECTION - CAMPAIGN_START) / (1000 * 60 * 60 * 24));
+  const diasPasados = totalDias - diffDias;
+  const pct         = Math.min(100, Math.max(0, (diasPasados / totalDias) * 100));
 
-  // Post-elección: ocultar banner
+  // Barra de progreso
+  if (fill) {
+    setTimeout(() => { fill.style.width = pct + '%'; }, 300);
+  }
+
+  // Post-elección
   if (now >= CLOSE) { banner.style.display = 'none'; return; }
 
-  // Día de elecciones
+  // Día de elecciones — cambiar a modo verde
   if (now >= ELECTION && now < CLOSE) {
-    banner.style.background = 'linear-gradient(135deg, #EAF3DE, #D4EDDA)';
-    banner.style.borderColor = '#1D9E75';
-    banner.style.color = '#085041';
-    titulo.textContent = '🗳️ ¡HOY ES EL DÍA! Urnas abiertas hasta las 4:00 PM';
-    subtitulo.textContent = 'Defiende tu voto. Testigos: estén en su mesa asignada.';
+    banner.style.background = 'linear-gradient(135deg, rgba(3,20,12,0.95), rgba(6,40,24,0.95))';
+    banner.style.borderColor = 'rgba(52,211,153,0.5)';
+    banner.style.animationName = 'none';
+    const pulse = banner.querySelector('.urgencia-v2__pulse');
+    if (pulse) { pulse.style.background = '#34D399'; pulse.style.boxShadow = '0 0 12px rgba(52,211,153,0.8)'; }
+    if (fill)  { fill.style.background = 'linear-gradient(90deg, #34D399, #059669)'; fill.style.width = '100%'; }
+    titulo.textContent   = '🗳️ ¡HOY ES EL DÍA! Urnas abiertas hasta las 4:00 PM';
+    if (subtitulo) subtitulo.textContent = 'Testigos: estén en su mesa asignada. ¡Defiendan cada voto!';
+    if (diasLabel) diasLabel.textContent = 'Elecciones en curso';
     banner.style.display = 'flex';
     return;
   }
 
-  // Urgencia extrema: día siguiente
+  // Mostrar banner si faltan 10 días o menos
+  if (diffDias > 10) { banner.style.display = 'none'; return; }
+
+  banner.style.display = 'flex';
+  if (diasLabel) diasLabel.textContent = `${diasPasados} de ${totalDias} días de campaña`;
+
   if (diffDias <= 1) {
-    banner.style.borderColor = '#E24B4A';
-    titulo.textContent = '🚨 ¡MAÑANA SON LAS ELECCIONES!';
-    subtitulo.textContent = 'Último día para confirmar testigos electorales. ¡Regístrate ahora!';
-    banner.style.display = 'flex';
-    return;
+    titulo.textContent = '🚨 ¡MAÑANA SON LAS ELECCIONES — 31 de mayo!';
+    if (subtitulo) subtitulo.textContent = 'Último llamado: confirma tu mesa de votación y prepárate.';
+    if (fill) { fill.style.background = 'linear-gradient(90deg, #EF4444, #EF4444)'; }
+  } else if (diffDias <= 3) {
+    titulo.textContent = `⚡ ¡Solo faltan ${diffDias} días! El 31 de mayo es la fecha histórica.`;
+    if (subtitulo) subtitulo.textContent = 'Regístrate como testigo electoral. Cada voto cuenta y debe ser defendido.';
+  } else {
+    titulo.textContent = `Faltan ${diffDias} días para el 31 de mayo — Elecciones presidenciales`;
+    if (subtitulo) subtitulo.textContent = 'Necesitamos testigos electorales certificados en cada mesa del país.';
   }
-
-  // Urgencia alta: 2 días o menos
-  if (diffDias <= 2) {
-    titulo.textContent = `⚡ ¡Faltan solo ${diffDias} días para el 31 de mayo!`;
-    subtitulo.textContent = 'Necesitamos testigos electorales en cada mesa. Regístrate ya.';
-    banner.style.display = 'flex';
-    return;
-  }
-
-  // Normal: más de 2 días
-  if (diffDias <= 10) {
-    titulo.textContent = `¡Faltan ${diffDias} días para el 31 de mayo!`;
-    subtitulo.textContent = 'Necesitamos testigos electorales en cada mesa de votación del país. Si puedes estar presente, regístrate ahora.';
-    banner.style.display = 'flex';
-    return;
-  }
-
-  // Más de 10 días: no mostrar banner de urgencia
-  banner.style.display = 'none';
 })();
 
 

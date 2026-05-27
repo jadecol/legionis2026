@@ -856,12 +856,23 @@
 <section id="participa" class="section section--alt" aria-labelledby="participa-title">
   <div class="wrap">
 
-    <!-- Banner urgencia electoral — texto generado por JS según días reales -->
-    <div id="urgencia-banner" class="urgencia-banner" role="alert" style="display:none">
-      <span class="emoji-icon icon-alert">⚠️</span>
-      <div id="urgencia-texto">
-        <strong id="urgencia-titulo"></strong>
-        <span id="urgencia-subtitulo"></span>
+    <!-- Banner urgencia electoral — diseño futurista, generado por JS -->
+    <div id="urgencia-banner" class="urgencia-v2" role="alert" style="display:none">
+      <div class="urgencia-v2__left">
+        <div class="urgencia-v2__pulse" aria-hidden="true"></div>
+        <div>
+          <div class="urgencia-v2__titulo" id="urgencia-titulo"></div>
+          <div class="urgencia-v2__sub" id="urgencia-subtitulo"></div>
+        </div>
+      </div>
+      <div class="urgencia-v2__right">
+        <div class="urgencia-v2__dias-wrap">
+          <div class="urgencia-v2__dias-bar">
+            <div class="urgencia-v2__dias-fill" id="urgencia-fill"></div>
+          </div>
+          <div class="urgencia-v2__dias-label" id="urgencia-dias-label"></div>
+        </div>
+        <a href="#participa" class="urgencia-v2__cta">Regístrate ahora →</a>
       </div>
     </div>
 
