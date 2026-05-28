@@ -562,7 +562,7 @@ window.switchTab = function(form, panel) {
   if (!banner || !titulo) return;
 
   const diffMs      = ELECTION - now;
-  const diffDias    = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const diffDias    = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const totalDias   = Math.ceil((ELECTION - CAMPAIGN_START) / (1000 * 60 * 60 * 24));
   const diasPasados = totalDias - diffDias;
   const pct         = Math.min(100, Math.max(0, (diasPasados / totalDias) * 100));

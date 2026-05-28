@@ -34,30 +34,6 @@
   <!-- ── Estilos propios ───────────────────────────────────── -->
   <link rel="stylesheet" href="css/styles.css">
 
-<style id="banner-v2-styles">
-/* Banner urgencia v2 - futurista */
-@keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(400%)}}
-@keyframes borderPulse{0%,100%{border-color:rgba(239,68,68,.4);box-shadow:0 0 0 0 rgba(239,68,68,0)}50%{border-color:rgba(239,68,68,.9);box-shadow:0 0 24px rgba(239,68,68,.2)}}
-@keyframes dotBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
-@keyframes fillBar{from{width:0}}
-.urgencia-v2{position:relative;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;background:linear-gradient(135deg,rgba(15,3,3,.95) 0%,rgba(30,8,8,.95) 50%,rgba(20,5,5,.95) 100%);border:1px solid rgba(239,68,68,.4);border-radius:16px;padding:1.125rem 1.5rem;margin-bottom:2.5rem;overflow:hidden;animation:borderPulse 2.5s ease-in-out infinite;backdrop-filter:blur(12px);flex-wrap:wrap}
-.urgencia-v2::before{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(239,68,68,.6),transparent);animation:scanline 3s linear infinite;pointer-events:none}
-.urgencia-v2::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,.04) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
-.urgencia-v2__left{display:flex;align-items:center;gap:1rem;position:relative;z-index:1;flex:1;min-width:200px}
-.urgencia-v2__pulse{width:12px;height:12px;border-radius:50%;background:#EF4444;flex-shrink:0;box-shadow:0 0 12px rgba(239,68,68,.8);animation:dotBlink 1s ease-in-out infinite}
-.urgencia-v2__titulo{font-size:15px;font-weight:700;color:#FCA5A5;letter-spacing:.02em;margin-bottom:3px}
-.urgencia-v2__sub{font-size:13px;color:rgba(255,255,255,.55);line-height:1.5}
-.urgencia-v2__right{display:flex;align-items:center;gap:1.25rem;position:relative;z-index:1;flex-shrink:0}
-.urgencia-v2__dias-wrap{display:flex;flex-direction:column;gap:5px;min-width:140px}
-.urgencia-v2__dias-bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
-.urgencia-v2__dias-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#EF4444,#F97316);transition:width 1.5s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px rgba(239,68,68,.6);animation:fillBar 1.5s cubic-bezier(.22,1,.36,1) both}
-.urgencia-v2__dias-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35)}
-.urgencia-v2__cta{display:inline-flex;align-items:center;background:linear-gradient(135deg,#EF4444 0%,#DC2626 100%);color:#fff;font-size:13px;font-weight:700;border-radius:10px;padding:8px 16px;white-space:nowrap;text-decoration:none;box-shadow:0 4px 16px rgba(239,68,68,.35);transition:all .2s;letter-spacing:.02em}
-.urgencia-v2__cta:hover{box-shadow:0 6px 24px rgba(239,68,68,.55);transform:translateY(-2px)}
-@media(max-width:700px){.urgencia-v2{flex-direction:column;align-items:flex-start}.urgencia-v2__right{width:100%;justify-content:space-between}.urgencia-v2__dias-wrap{flex:1}}
-/* Scrollbar */
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#0C1F3F}::-webkit-scrollbar-thumb{background:rgba(59,130,246,.4);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:rgba(59,130,246,.7)}
-</style>
 </head>
 
 <body>
